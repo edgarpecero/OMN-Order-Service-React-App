@@ -1,9 +1,9 @@
-import React, { Dispatch, SetStateAction, useMemo } from 'react';
-import { Typography } from '@mui/material';
+import React, { Dispatch, SetStateAction, useCallback, useMemo } from 'react';
 import { ActionButtons } from '../../../shared/hooks/actionmodal/ActionModal.types';
 import ActionModal from '../../../shared/hooks/actionmodal/ActionModal';
-import { LineItem } from '../Orders.types';
 import AvailableItemsList from './AvailableItemList';
+import { useOrderContext } from '../context/OrderContext';
+import { useCreateNewOrder } from '../hooks/useCreateOrder';
 
 export interface CreateNewOrderModalProps {
   onConfirm: () => void;
@@ -16,13 +16,26 @@ const CreateNewOrderModal = ({
   onClose,
   onConfirm,
 }: CreateNewOrderModalProps) => {
-  
+  const { selectedItems } = useOrderContext();
+  const { createNewOrder } = useCreateNewOrder();
+
+  const handleCreateNewOrder = useCallback(async () => {
+    try {
+      const response = await createNewOrder(selectedItems);
+      console.log('Data successfully posted:', response);
+    } catch (error) {
+      console.error('Failed to post selected rows:', error);
+    } finally {
+      onClose();
+    }
+  }, [selectedItems, createNewOrder, onClose]);
+
   const actionButtons: ActionButtons[] = useMemo(() => {
     const createButton: ActionButtons = {
       children: 'Create',
       buttonProps: {
         variant: 'contained',
-        onClick: onConfirm,
+        onClick: handleCreateNewOrder,
         fullWidth: true,
       },
     };

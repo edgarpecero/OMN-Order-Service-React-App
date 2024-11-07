@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import axios from "axios";
 import { LineItem, Order } from '../Orders.types';
 import { lineItems } from '../../../shared/constants/constanst';
@@ -8,6 +8,7 @@ interface OrderContextProps {
   availableItems: LineItem[];
   orderList: Order[];
   setSelectedItems: Dispatch<SetStateAction<LineItem[]>>;
+  handleRefresh: () => void;
   resetSelection: () => void;
 };
 
@@ -32,11 +33,12 @@ export const useOrderContext = () => {
 const useOrderProvider = (): OrderContextProps => {
   const [selectedItems, setSelectedItems] = useState<LineItem[]>([]);
   const [orderList, setOrderList] = useState<Order[]>([]);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/orders');
+        const response = await axios.get('http://localhost:5009/orders');
         const orderList = response?.data?.orders;
         if (orderList) {
           setOrderList(orderList);
@@ -47,15 +49,18 @@ const useOrderProvider = (): OrderContextProps => {
     }
 
     fetch();
-  }, []);
+  }, [refresh]);
 
   const resetSelection = () => setSelectedItems([]);
+
+  const handleRefresh = () => setRefresh(prev => !prev);
 
   return {
     availableItems: lineItems,
     orderList,
     selectedItems,
     setSelectedItems,
+    handleRefresh,
     resetSelection,
   };
 };

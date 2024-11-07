@@ -17,17 +17,17 @@ export const columns: GridColDef<Order>[] = [
   {
     field: 'orderId',
     headerName: 'Order ID',
-    width: 150,
+    width: 200,
   },
   {
     field: 'status',
     headerName: 'Status',
-    width: 160,
+    width: 140,
   },
   {
     field: 'customer',
     headerName: 'Customer Name',
-    width: 200,
+    width: 140,
     valueFormatter: (value: Customer) => {
       return formatValue(value?.name);
     },
@@ -36,20 +36,20 @@ export const columns: GridColDef<Order>[] = [
     field: 'totalAmount',
     headerName: 'Total Amount',
     type: 'number',
-    width: 150,
+    width: 100,
   },
   {
     field: 'created',
     headerName: 'Created',
     type: 'date',
-    width: 200,
+    width: 100,
     valueFormatter: (date: string) => dateFormatter(date),
   },
   {
     field: 'modified',
     headerName: 'Modified',
     type: 'date',
-    width: 200,
+    width: 100,
     valueFormatter: (date: string) => dateFormatter(date),
   }
 ];

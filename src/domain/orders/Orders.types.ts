@@ -2,7 +2,7 @@ import { OrderStatus } from "./Orders.enum";
 
 // Define the type for LineItem with optional properties
 export interface LineItem {
-  id?: string;
+  id: string;
   name?: string;
   quantity?: number;
   price?: number;
