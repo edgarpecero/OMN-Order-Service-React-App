@@ -1,11 +1,11 @@
-import { OrderStatus } from "./Orders.enum";
+import { OrderStatus } from "./OrderPage.enum";
 
 // Define the type for LineItem with optional properties
 export interface LineItem {
-  id?: string;
+  id: string;
   name?: string;
-  quantity?: number;
-  price?: number;
+  quantity: number;
+  price: number;
 }
 
 // Define the type for Customer with optional properties

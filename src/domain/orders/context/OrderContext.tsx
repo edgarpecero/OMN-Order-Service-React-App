@@ -1,14 +1,21 @@
 import React, { createContext, Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from 'react';
 import axios from "axios";
-import { LineItem, Order } from '../Orders.types';
+import { LineItem, Order } from '../OrderPage.types';
 import { lineItems } from '../../../shared/constants/constanst';
+import { AlertSeverity, useSnackbar } from '../../../shared/context/snackbar/Snackbar';
+import { OrderOperation } from '../OrderPage.utils';
 
 interface OrderContextProps {
   selectedItems: LineItem[];
   availableItems: LineItem[];
-  orderList: Order[];
+  ordersData: Order[];
+  isCreateNewOrderModalOpen: boolean;
+  setOrdersData: Dispatch<SetStateAction<Order[]>>;
   setSelectedItems: Dispatch<SetStateAction<LineItem[]>>;
+  handleRefresh: () => void;
   resetSelection: () => void;
+  handleOrderSnackbar: (op: OrderOperation, success: boolean) => void;
+  isCreateOrderModalOpen: (open?: boolean) => void;
 };
 
 const OrderContext = createContext({} as OrderContextProps);
@@ -30,32 +37,63 @@ export const useOrderContext = () => {
 };
 
 const useOrderProvider = (): OrderContextProps => {
+  const [isCreateNewOrderModalOpen, setCreateNewOrderModalOpen] = useState<boolean>(false);
   const [selectedItems, setSelectedItems] = useState<LineItem[]>([]);
-  const [orderList, setOrderList] = useState<Order[]>([]);
+  const [availableItems, setAvailableItems] = useState<LineItem[]>(lineItems);
+  const [ordersData, setOrdersData] = useState<Order[]>([]);
+  const [refresh, setRefresh] = useState(false);
+  const { openSnackbar } = useSnackbar();
 
   useEffect(() => {
     const fetch = async () => {
       try {
         const response = await axios.get('http://localhost:5000/orders');
-        const orderList = response?.data?.orders;
-        if (orderList) {
-          setOrderList(orderList);
+        const ordersData = response?.data?.orders;
+        if (ordersData) {
+          setOrdersData(ordersData);
         }
       } catch (error) {
-        console.error("Error fetching orders:", error);
+        openSnackbar("Failed to fetch orders!", AlertSeverity.Error);
       }
     }
 
     fetch();
+  }, [refresh]);
+
+  const resetSelection = () => {
+    setSelectedItems([])
+    setAvailableItems(prev => prev.map(item => ({ ...item, quantity: 0 })));
+  };
+
+  const handleRefresh = () => setRefresh(prev => !prev);
+
+  const handleOrderSnackbar = (op: OrderOperation, success: boolean) => {
+    const successMessage = 'Order placed! A confirmation email has been sent to your inbox!';
+    const message = success ? successMessage : `Failed to ${op.toLowerCase()} order!`;
+    const severity = success ? AlertSeverity.Success : AlertSeverity.Error;
+    openSnackbar(message, severity);
+  };
+
+  const modalActions = {
+    open: () => setCreateNewOrderModalOpen(true),
+    close: () => setCreateNewOrderModalOpen(false),
+  };
+
+  const isCreateOrderModalOpen = useCallback((open?: boolean) => {
+    const action = open ? 'open' : 'close';
+    modalActions[action]();
   }, []);
 
-  const resetSelection = () => setSelectedItems([]);
-
   return {
-    availableItems: lineItems,
-    orderList,
+    availableItems,
+    ordersData,
     selectedItems,
+    isCreateNewOrderModalOpen,
     setSelectedItems,
+    handleRefresh,
+    setOrdersData,
     resetSelection,
+    isCreateOrderModalOpen,
+    handleOrderSnackbar
   };
 };
