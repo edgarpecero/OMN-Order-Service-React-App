@@ -5,6 +5,8 @@ import { lineItems } from '../../../shared/constants/constanst';
 import { AlertSeverity, useSnackbar } from '../../../shared/context/snackbar/Snackbar';
 import { OrderOperation } from '../OrderPage.utils';
 
+const path = process.env.REACT_APP_ORDER_SERVICE_API_URL as string;
+
 interface OrderContextProps {
   selectedItems: LineItem[];
   availableItems: LineItem[];
@@ -47,7 +49,7 @@ const useOrderProvider = (): OrderContextProps => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/orders');
+        const response = await axios.get(path);
         const ordersData = response?.data?.orders;
         if (ordersData) {
           setOrdersData(ordersData.map((order: Order, index: number) => ({ ...order, tableIndex: index + 1 })));

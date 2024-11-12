@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import DataGrid from "../../shared/componets/datagrid/DataGrid"
 import { Box, Button } from "@mui/material";
 import CreateNewOrderModal from "./components/createnewordermodal/CreateNewOrderModal";
@@ -9,6 +9,7 @@ import { useDeleteOrder } from "./hooks/useOrders";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import DeleteRowIcon from "../../shared/componets/Icons/DeleteRowIcon";
 import { OrderStatus } from "./OrderPage.enum";
+import { CreateNewOrderModalRefType } from "./components/createnewordermodal/CreateNewOrderModal.types";
 
 const Orders = () => {
   const {
@@ -18,9 +19,15 @@ const Orders = () => {
     setOrdersData,
     isCreateNewOrderModalOpen,
     isCreateOrderModalOpen,
-    resetSelection,
   } = useOrderContext();
   const { deleteOrder } = useDeleteOrder();
+  const createOrderModalRef = useRef<CreateNewOrderModalRefType>(null);
+
+  // How to use ref to trigger child component method from parent!
+  // const resetCreateOrderModalForm = useCallback(() => {
+  //   createOrderModalRef.current?.handleResetForm();
+  //   console.log("resetCreateOrderModalForm from parent!");
+  // }, [createOrderModalRef]);
 
   const renderDeleteCell = useCallback((params: GridRenderCellParams) => {
     const onDelete = async (e: React.MouseEvent) => {
@@ -61,7 +68,7 @@ const Orders = () => {
       <CreateNewOrderModal
         open={isCreateNewOrderModalOpen}
         onClose={() => isCreateOrderModalOpen(false)}
-        onReset={resetSelection}
+        ref={createOrderModalRef}
       />
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
         <RefreshIcon onRefresh={handleRefresh} />

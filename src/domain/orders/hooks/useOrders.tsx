@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { Order } from '../OrderPage.types';
 
-const path = process.env.REACT_APP_ORDER_SERVICE_LOCAL_URL;
+const path = process.env.REACT_APP_ORDER_SERVICE_API_URL as string;
 
 export const useCreateNewOrder = () => {
     const createOrder = async (payload: Order) => {
         try {
-            const response = await axios.post(path || '', payload);
+            const response = await axios.post(path, payload);
             return response.data; // or any other handling needed
         } catch (error) {
             throw error; // re-throw for further handling if needed

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { forwardRef, useCallback, useImperativeHandle, useMemo } from 'react';
 import { ActionButtons } from '../../../../shared/componets/actionmodal/ActionModal.types';
 import ActionModal from '../../../../shared/componets/actionmodal/ActionModal';
 import AvailableItemsList from './AvailableItemList';
@@ -14,22 +14,32 @@ import { useCreateNewOrder } from '../../hooks/useOrders';
 import { OrderOperation } from '../../OrderPage.utils';
 import { Typography } from '@mui/material';
 
-const CreateNewOrderModal = ({
+const CreateNewOrderModal = forwardRef(({
   open,
   onClose,
   onConfirm,
   onReset,
-}: CreateNewOrderModalProps) => {
+}: CreateNewOrderModalProps, ref) => {
   const {
-    handleRefresh,
     selectedItems,
     handleOrderSnackbar,
     isCreateOrderModalOpen,
+    resetSelection,    
   } = useOrderContext();
   const { createNewOrder } = useCreateNewOrder();
   const methods = useForm<CustomerFormInputs>({
     resolver: yupResolver(schema),
   });
+
+  const handleResetForm = useCallback(() => {
+    resetSelection();
+    methods.reset();
+    onReset && onReset();
+  }, [resetSelection, methods, onReset]);
+
+  useImperativeHandle(ref, () => ({
+    handleResetForm: handleResetForm,
+  }), [handleResetForm]); 
 
   const onSubmitNewOrder: SubmitHandler<CustomerFormInputs> = useCallback(async (data) => {
     try {
@@ -40,8 +50,7 @@ const CreateNewOrderModal = ({
     } catch (error) {
       handleOrderSnackbar(OrderOperation.CREATE, false);
     } finally {
-      methods.reset();
-      handleRefresh();
+      handleResetForm();
       isCreateOrderModalOpen(false);
     }
   }, [
@@ -49,9 +58,8 @@ const CreateNewOrderModal = ({
     createNewOrder,
     isCreateOrderModalOpen,
     handleOrderSnackbar,
-    handleRefresh,
+    handleResetForm,
     onConfirm,
-    methods
   ]);
 
   const actionButtons: ActionButtons[] = useMemo(() => {
@@ -68,14 +76,14 @@ const CreateNewOrderModal = ({
     const resetGridButton: ActionButtons = {
       children: 'Reset',
       buttonProps: {
-        onClick: onReset,
+        onClick: handleResetForm,
         color: 'inherit',
         variant: 'outlined',
         fullWidth: true,
       },
     };
     return [resetGridButton, createButton];
-  }, [onReset, methods.formState.isValid]);
+  }, [handleResetForm, methods.formState.isValid]);
 
   const totalAmount = useMemo(() => {
     return selectedItems.reduce((acc, item: LineItem) => acc + item.price * item.quantity, 0);
@@ -101,6 +109,6 @@ const CreateNewOrderModal = ({
       </FormProvider>
     </ActionModal>
   );
-};
+});
 
 export default React.memo(CreateNewOrderModal);
