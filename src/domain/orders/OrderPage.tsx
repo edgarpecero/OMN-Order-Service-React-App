@@ -8,6 +8,7 @@ import { columns, OrderOperation } from "./OrderPage.utils";
 import { useDeleteOrder } from "./hooks/useOrders";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import DeleteRowIcon from "../../shared/componets/Icons/DeleteRowIcon";
+import { OrderStatus } from "./OrderPage.enum";
 
 const Orders = () => {
   const {
@@ -26,14 +27,19 @@ const Orders = () => {
       e.stopPropagation();
       try {
         await deleteOrder(params.row.id);
-        setOrdersData((prev) => prev.filter((order) => order.id !== params.row.id));
         handleOrderSnackbar(OrderOperation.DELETE, true);
+        handleRefresh();
       } catch (error) {
         handleOrderSnackbar(OrderOperation.DELETE, false);
       }
     };
-    return <DeleteRowIcon onDelete={onDelete} />;
-  }, [deleteOrder, handleOrderSnackbar, setOrdersData]);
+    return (
+      <DeleteRowIcon
+        onDelete={onDelete}
+        isDeleted={params?.row?.status === OrderStatus.CANCELLED}
+      />
+    );
+  }, [deleteOrder, handleOrderSnackbar, setOrdersData, handleRefresh]);
 
   const columnsWithDelete = useMemo<GridColDef[]>(() => [
     ...columns,

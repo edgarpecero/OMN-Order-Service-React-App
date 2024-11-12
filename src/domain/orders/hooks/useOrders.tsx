@@ -20,7 +20,7 @@ export const useCreateNewOrder = () => {
 
 export const useDeleteOrder = () => {
     const deleteOrder = async (id?: string) => {
-        const getPath = () => path || '' + (id ? `/${id}` : '');
+        const getPath = () => path + (id ? `/${id}` : '');
         try {
             await axios.delete(getPath());
         } catch (error) {
