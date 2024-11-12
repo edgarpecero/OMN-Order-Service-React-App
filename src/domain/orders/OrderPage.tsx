@@ -34,7 +34,7 @@ const Orders = () => {
       e.stopPropagation();
       try {
         await deleteOrder(params.row.id);
-        handleOrderSnackbar(OrderOperation.DELETE, true);
+        handleOrderSnackbar(OrderOperation.DELETE, true, params.row.orderId);
         handleRefresh();
       } catch (error) {
         handleOrderSnackbar(OrderOperation.DELETE, false);

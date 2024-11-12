@@ -3,7 +3,7 @@ import { ActionButtons } from '../../../../shared/componets/actionmodal/ActionMo
 import ActionModal from '../../../../shared/componets/actionmodal/ActionModal';
 import AvailableItemsList from './AvailableItemList';
 import { useOrderContext } from '../../context/OrderContext';
-import { LineItem } from '../../OrderPage.types';
+import { LineItem, Order } from '../../OrderPage.types';
 import TotalAmoutLabel from './TotalAmoutLabel';
 import CustomerForm from './CustomerForm';
 import { schema } from './CreateNewOrderModal.utils';
@@ -44,8 +44,10 @@ const CreateNewOrderModal = forwardRef(({
   const onSubmitNewOrder: SubmitHandler<CustomerFormInputs> = useCallback(async (data) => {
     try {
       const payload = { lineItems: selectedItems, customer: data };
-      await createNewOrder(payload);
-      handleOrderSnackbar(OrderOperation.CREATE, true);
+      const response: Order = await createNewOrder(payload);
+      if (response){
+        handleOrderSnackbar(OrderOperation.CREATE, true, response.orderId);
+      }
       onConfirm && onConfirm();
     } catch (error) {
       handleOrderSnackbar(OrderOperation.CREATE, false);
@@ -70,7 +72,7 @@ const CreateNewOrderModal = forwardRef(({
         form: 'newOrderForm',
         variant: 'contained',
         fullWidth: true,
-        // disabled: !methods.formState.isValid,
+        disabled: !methods.formState.isValid,
       },
     };
     const resetGridButton: ActionButtons = {
