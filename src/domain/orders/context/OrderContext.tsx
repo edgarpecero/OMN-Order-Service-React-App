@@ -16,7 +16,7 @@ interface OrderContextProps {
   setSelectedItems: Dispatch<SetStateAction<LineItem[]>>;
   handleRefresh: () => void;
   resetSelection: () => void;
-  handleOrderSnackbar: (op: OrderOperation, success: boolean) => void;
+  handleOrderSnackbar: (op: OrderOperation, success: boolean, orderId?: string) => void;
   isCreateOrderModalOpen: (open?: boolean) => void;
 };
 
@@ -69,14 +69,14 @@ const useOrderProvider = (): OrderContextProps => {
 
   const handleRefresh = () => setRefresh(prev => !prev);
 
-  const handleOrderSnackbar = (op: OrderOperation, success: boolean) => {
+  const handleOrderSnackbar = (op: OrderOperation, success: boolean, orderId?: string) => {
     let successMessage;
     switch (op) {
       case OrderOperation.DELETE:
-        successMessage = 'Order has been canceled!';
+        successMessage = `Order ${orderId || ''} has been canceled!`;
         break;
       default:
-        successMessage = 'Order placed! A confirmation email has been sent to your inbox!';
+        successMessage = `Order ${orderId || ''} placed! A confirmation email has been sent to your inbox!`;
     }
     const message = success ? successMessage : `Failed to ${op.toLowerCase()} order!`;
     const severity = success ? AlertSeverity.Success : AlertSeverity.Error;
