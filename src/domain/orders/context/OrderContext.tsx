@@ -50,7 +50,7 @@ const useOrderProvider = (): OrderContextProps => {
         const response = await axios.get('http://localhost:5000/orders');
         const ordersData = response?.data?.orders;
         if (ordersData) {
-          setOrdersData(ordersData);
+          setOrdersData(ordersData.map((order: Order, index: number) => ({ ...order, tableIndex: index + 1 })));
         }
       } catch (error) {
         openSnackbar("Failed to fetch orders!", AlertSeverity.Error);
@@ -68,7 +68,14 @@ const useOrderProvider = (): OrderContextProps => {
   const handleRefresh = () => setRefresh(prev => !prev);
 
   const handleOrderSnackbar = (op: OrderOperation, success: boolean) => {
-    const successMessage = 'Order placed! A confirmation email has been sent to your inbox!';
+    let successMessage;
+    switch (op) {
+      case OrderOperation.DELETE:
+        successMessage = 'Order has been canceled!';
+        break;
+      default:
+        successMessage = 'Order placed! A confirmation email has been sent to your inbox!';
+    }
     const message = success ? successMessage : `Failed to ${op.toLowerCase()} order!`;
     const severity = success ? AlertSeverity.Success : AlertSeverity.Error;
     openSnackbar(message, severity);

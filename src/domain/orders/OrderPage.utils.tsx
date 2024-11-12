@@ -9,7 +9,7 @@ export enum OrderOperation {
 };
 
 export const columns: GridColDef<Order>[] = [
-  { field: 'id', headerName: 'ID', width: 90 },
+  { field: 'tableIndex', headerName: 'ID', width: 40 },
   {
     field: 'orderId',
     headerName: 'Order ID',

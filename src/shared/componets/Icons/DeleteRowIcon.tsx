@@ -2,14 +2,20 @@ import { Tooltip, IconButton } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import React from 'react';
 
-const DeleteRowIcon = ({ onDelete }: { onDelete: (e: React.MouseEvent) => void }) => {
+interface DeleteRowIconProps {
+  onDelete: (e: React.MouseEvent) => void;
+  isDeleted: boolean;
+}
 
+const DeleteRowIcon = ({ onDelete, isDeleted }: DeleteRowIconProps) => {
   return (
-    <Tooltip title='Delete'>
-      <IconButton aria-label='delete-cell-icon' onClick={onDelete}>
-        <DeleteOutlineIcon color='error' fontSize='inherit' />
-      </IconButton>
-    </Tooltip>
+    !isDeleted ? (
+      <Tooltip title="Delete">
+        <IconButton aria-label="delete-cell-icon" onClick={onDelete}>
+          <DeleteOutlineIcon color="error" fontSize="inherit" />
+        </IconButton>
+      </Tooltip>
+    ) : null
   );
 };
 
