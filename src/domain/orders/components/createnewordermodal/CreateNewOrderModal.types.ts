@@ -5,6 +5,13 @@ export interface CreateNewOrderModalProps {
   open: boolean;
 }
 
+export interface OrderModalProps {
+  onConfirm?: () => void;
+  onClose: () => void;
+  onReset?: () => void;
+  open: boolean;
+}
+
 export interface CustomerFormInputs {
   name: string;
   email: string;

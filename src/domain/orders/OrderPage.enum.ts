@@ -4,3 +4,9 @@ export enum OrderStatus {
   DELIVERED = "Delivered",
   CANCELLED = "Cancelled"
 }
+
+export enum OrderOperation {
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE'
+};

@@ -9,7 +9,7 @@ import CustomerForm from './CustomerForm';
 import { schema } from './CreateNewOrderModal.utils';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
-import { CreateNewOrderModalProps, CustomerFormInputs } from './CreateNewOrderModal.types';
+import { CustomerFormInputs, OrderModalProps } from './CreateNewOrderModal.types';
 import { useCreateNewOrder } from '../../hooks/useOrders';
 import { OrderOperation } from '../../OrderPage.utils';
 import { Typography } from '@mui/material';
@@ -19,11 +19,11 @@ const CreateNewOrderModal = forwardRef(({
   onClose,
   onConfirm,
   onReset,
-}: CreateNewOrderModalProps, ref) => {
+}: OrderModalProps, ref) => {
   const {
     selectedItems,
     handleOrderSnackbar,
-    isCreateOrderModalOpen,
+    toggleCreateOrderModal,
     resetSelection,    
   } = useOrderContext();
   const { createNewOrder } = useCreateNewOrder();
@@ -53,12 +53,12 @@ const CreateNewOrderModal = forwardRef(({
       handleOrderSnackbar(OrderOperation.CREATE, false);
     } finally {
       handleResetForm();
-      isCreateOrderModalOpen(false);
+      toggleCreateOrderModal(false);
     }
   }, [
     selectedItems,
     createNewOrder,
-    isCreateOrderModalOpen,
+    toggleCreateOrderModal,
     handleOrderSnackbar,
     handleResetForm,
     onConfirm,

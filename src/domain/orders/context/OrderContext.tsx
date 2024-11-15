@@ -12,12 +12,14 @@ interface OrderContextProps {
   availableItems: LineItem[];
   ordersData: Order[];
   isCreateNewOrderModalOpen: boolean;
+  isEditOrderModalOpen: boolean;
   setOrdersData: Dispatch<SetStateAction<Order[]>>;
   setSelectedItems: Dispatch<SetStateAction<LineItem[]>>;
   handleRefresh: () => void;
   resetSelection: () => void;
   handleOrderSnackbar: (op: OrderOperation, success: boolean, orderId?: string) => void;
-  isCreateOrderModalOpen: (open?: boolean) => void;
+  toggleCreateOrderModal: (open?: boolean) => void;
+  toggleEditOrderModal: (open?: boolean) => void;
 };
 
 const OrderContext = createContext({} as OrderContextProps);
@@ -39,6 +41,7 @@ export const useOrderContext = () => {
 };
 
 const useOrderProvider = (): OrderContextProps => {
+  const [isEditOrderModalOpen, setEditOrderModalOpen] = useState<boolean>(false);
   const [isCreateNewOrderModalOpen, setCreateNewOrderModalOpen] = useState<boolean>(false);
   const [selectedItems, setSelectedItems] = useState<LineItem[]>([]);
   const [availableItems, setAvailableItems] = useState<LineItem[]>(lineItems);
@@ -83,14 +86,24 @@ const useOrderProvider = (): OrderContextProps => {
     openSnackbar(message, severity);
   };
 
-  const modalActions = {
+  const editOrderModalActions = {
+    open: () => setEditOrderModalOpen(true),
+    close: () => setEditOrderModalOpen(false),
+  };
+
+  const createOrderModalActions = {
     open: () => setCreateNewOrderModalOpen(true),
     close: () => setCreateNewOrderModalOpen(false),
   };
 
-  const isCreateOrderModalOpen = useCallback((open?: boolean) => {
+  const toggleCreateOrderModal = useCallback((open?: boolean) => {
     const action = open ? 'open' : 'close';
-    modalActions[action]();
+    createOrderModalActions[action]();
+  }, []);
+
+  const toggleEditOrderModal = useCallback((open?: boolean) => {
+    const action = open ? 'open' : 'close';
+    editOrderModalActions[action]();
   }, []);
 
   return {
@@ -98,11 +111,13 @@ const useOrderProvider = (): OrderContextProps => {
     ordersData,
     selectedItems,
     isCreateNewOrderModalOpen,
+    isEditOrderModalOpen,
     setSelectedItems,
     handleRefresh,
     setOrdersData,
     resetSelection,
-    isCreateOrderModalOpen,
+    toggleCreateOrderModal,
+    toggleEditOrderModal,
     handleOrderSnackbar
   };
 };
