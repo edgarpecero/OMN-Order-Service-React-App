@@ -1,7 +1,12 @@
 # Order Management and Notification - React Frontend
 
-Springboot App Repository: https://github.com/edgarpecero/OMN-Order-Service
+Proyect app url : http://www.edgar-omn.com.s3-website-us-west-1.amazonaws.com/
 
+Order Service Repository: https://github.com/edgarpecero/OMN-Order-Service/
+
+Notification Service Repository: https://github.com/edgarpecero/OMN-Notification-Service/
+
+React Frontend Repository: [https://github.com/edgarpecero/OMN-Order-Service-React-App](https://github.com/edgarpecero/OMN-Order-Service-React-App)
 **OrderWave Frontend** is the client-side application for the Order Management and Notification platform, an e-commerce solution designed for efficient order tracking and notification management. This React app enables users to interact with order data, view real-time status updates, and receive notifications based on order progression. The project emphasizes scalability, performance, and a modern user experience.
 
 ## Table of Contents
