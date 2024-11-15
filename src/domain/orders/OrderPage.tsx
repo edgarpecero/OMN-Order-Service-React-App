@@ -6,7 +6,7 @@ import { OrderProvider, useOrderContext } from "./context/OrderContext";
 import RefreshIcon from "../../shared/componets/Icons/RefreshIcon";
 import { columns, OrderOperation } from "./OrderPage.utils";
 import { useDeleteOrder } from "./hooks/useOrders";
-import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { GridColDef, GridRenderCellParams, GridRowParams } from "@mui/x-data-grid";
 import DeleteRowIcon from "../../shared/componets/Icons/DeleteRowIcon";
 import { OrderStatus } from "./OrderPage.enum";
 import { CreateNewOrderModalRefType } from "./components/createnewordermodal/CreateNewOrderModal.types";
@@ -18,7 +18,7 @@ const Orders = () => {
     handleOrderSnackbar,
     setOrdersData,
     isCreateNewOrderModalOpen,
-    isCreateOrderModalOpen,
+    toggleCreateOrderModal,
   } = useOrderContext();
   const { deleteOrder } = useDeleteOrder();
   const createOrderModalRef = useRef<CreateNewOrderModalRefType>(null);
@@ -67,16 +67,27 @@ const Orders = () => {
     <>
       <CreateNewOrderModal
         open={isCreateNewOrderModalOpen}
-        onClose={() => isCreateOrderModalOpen(false)}
+        onClose={() => toggleCreateOrderModal(false)}
         ref={createOrderModalRef}
       />
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
         <RefreshIcon onRefresh={handleRefresh} />
-        <Button sx={{ ml: 2 }} variant="contained" onClick={() => isCreateOrderModalOpen(true)}>
+        <Button sx={{ ml: 2 }} variant="contained" onClick={() => toggleCreateOrderModal(true)}>
           Create New Order
         </Button>
       </Box>
-      <DataGrid rows={rows} columns={columnsWithDelete} />
+      <Box sx={{
+        backgroundColor: "white",
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        overflow: "auto",
+      }}>
+        <DataGrid
+          rows={rows}
+          columns={columnsWithDelete}
+        />
+      </Box>
     </>
   );
 }

@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="App">
       <SnackbarProvider>
-        <Layout title={`Edgar's Order Management App`}>
+        <Layout >
           <Orders />
         </Layout>
       </SnackbarProvider>
