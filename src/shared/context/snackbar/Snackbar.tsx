@@ -2,8 +2,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { Alert, AlertColor, AlertPropsColorOverrides } from '@mui/material';
-import { OverridableStringUnion } from '@mui/types';
+import { Alert } from '@mui/material';
 
 interface SnackbarContextProps {
   openSnackbar: (message: string, severity?: AlertSeverity, duration?: number) => void;
@@ -11,7 +10,7 @@ interface SnackbarContextProps {
     event: React.SyntheticEvent | Event,
     reason?: SnackbarCloseReason,
   ) => void;
-  severity?: OverridableStringUnion<AlertColor, AlertPropsColorOverrides>;
+  severity?: AlertSeverity;
 }
 
 const SnackbarContext = createContext<SnackbarContextProps | undefined>(undefined);
